@@ -7,11 +7,9 @@ def get_json_response(url, params=None):
     return response.json()
 
 
-def get_trending_repositories(top_size):
-    period_of_days = 7
-    last_week = str(datetime.date.today() - datetime.timedelta(days=period_of_days))
+def get_trending_repositories(creation_day, top_size):
     search_repo_url = 'https://api.github.com/search/repositories'
-    url_params = {'q': 'created:>=' + last_week, 'sort': 'stars', 'per_page': top_size}
+    url_params = {'q': 'created:>=' + creation_day, 'sort': 'stars', 'per_page': top_size}
     return get_json_response(search_repo_url, url_params)['items']
 
 
@@ -23,7 +21,9 @@ def get_open_issues_amount(repo_owner, repo_name):
 
 def main():
     top_size = 20
-    trending_rep = get_trending_repositories(top_size)
+    period_of_days = 7
+    creation_day = str(datetime.date.today() - datetime.timedelta(days=period_of_days))
+    trending_rep = get_trending_repositories(creation_day, top_size)
 
     for repository in trending_rep:
         repo_owner_name = repository['owner']['login']
